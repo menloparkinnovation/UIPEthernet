@@ -1,3 +1,23 @@
+
+//
+// MenloParkInnovation LLC Fork:
+//
+// 05/21/2019
+//
+// - Changed addressing for local network.
+// - Changed MAC addressing to be independent for TcpClient, TcpServer
+// - Changed IP addressing to match TcpClient and TcpServer and debugged.
+// - Support for F32C on FPGAArduino, a 32 bit MIPS/RISC-V soft core running on FPGA's
+//   https://github.com/f32c/f32c
+//   http://www.nxlab.fer.hr/fpgarduino/
+//
+
+#define TCPSERVER_PORT 5000 // Server and client should agree on port
+#define TCPSERVER_ADDRESS_MSB3 192
+#define TCPSERVER_ADDRESS_MSB2 168
+#define TCPSERVER_ADDRESS_MSB1 254
+#define TCPSERVER_ADDRESS_MSB0 6
+
 /*
  * UIPEthernet TcpClient example.
  *
@@ -45,7 +65,7 @@ int main() {
     #endif
   #endif
 
-  uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x05};
+  uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x05}; // TcpServer ends in 0x06
   Ethernet.begin(mac); //Configure IP address via DHCP
 
   #if ACTLOGLEVEL>=LOG_INFO
@@ -97,7 +117,9 @@ while(true) {
       #endif
       // replace hostname with name of machine running tcpserver.pl
 //      if (client.connect("server.local",5000))
-      if (client.connect(IPAddress(192,168,0,1),5000))
+//      if (client.connect(IPAddress(192,168,0,1),TCPSERVER_PORT)) // Menlo: make a #define
+      // Menlo: Use #define's
+      if (client.connect(IPAddress(TCPSERVER_ADDRESS_MSB3, TCPSERVER_ADDRESS_MSB2, TCPSERVER_ADDRESS_MSB1, TCPSERVER_ADDRESS_MSB0),TCPSERVER_PORT))
         {
           #if ACTLOGLEVEL>=LOG_INFO
             LogObject.uart_send_strln(F("Client connected"));

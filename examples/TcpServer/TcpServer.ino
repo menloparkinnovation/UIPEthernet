@@ -1,3 +1,19 @@
+
+//
+// MenloParkInnovation LLC Fork:
+//
+// 05/21/2019
+//
+// - Changed addressing for local network.
+// - Changed MAC addressing to be independent for TcpClient, TcpServer
+// - Changed IP addressing to match TcpClient and TcpServer and debugged.
+// - Changed to DHCP for TcpServer.
+// - Added logging print out of assigned DHCP addresses for TcpServer.
+// - Support for F32C on FPGAArduino, a 32 bit MIPS/RISC-V soft core running on FPGA's
+//   https://github.com/f32c/f32c
+//   http://www.nxlab.fer.hr/fpgarduino/
+//
+
 /*
  * UIPEthernet TCPServer example.
  *
@@ -18,13 +34,23 @@
  * Adaption to Enc28J60 by Norbert Truchsess <norbert.truchsess@t-online.de>
  */
 
-#define MACADDRESS 0x00,0x01,0x02,0x03,0x04,0x05
-#define MYIPADDR 192,168,1,6
-#define MYIPMASK 255,255,255,0
-#define MYDNS 192,168,1,1
-#define MYGW 192,168,1,1
-#define LISTENPORT 1000
-#define UARTBAUD 115200
+//
+// Menlo definitions:
+//
+#define MACADDRESS 0x00,0x01,0x02,0x03,0x04,0x06 // TcpClient ends in 0x05
+
+#define TCPSERVER_PORT 5000 // Server and client should agree on port
+
+#define UARTBAUD 9600       // same as TcpClient, makes it easy with Arduino IDE default settings
+
+// #define MACADDRESS 0x00,0x01,0x02,0x03,0x04,0x05
+// #define MYIPADDR 192,168,1,6
+// #define MYIPMASK 255,255,255,0
+// #define MYDNS 192,168,1,1
+// #define MYGW 192,168,1,1
+// #define LISTENPORT 1000
+// #define UARTBAUD 115200
+
 
 #if defined(__MBED__)
   #include <mbed.h>
@@ -37,7 +63,7 @@
 #include <UIPEthernet.h>
 #include "utility/logging.h"
 
-EthernetServer server = EthernetServer(LISTENPORT);
+EthernetServer server = EthernetServer(TCPSERVER_PORT);
 
 #if defined(ARDUINO)
 void setup() {
@@ -61,8 +87,41 @@ int main() {
   uint8_t myDNS[4] = {MYDNS};
   uint8_t myGW[4] = {MYGW};
 
-//  Ethernet.begin(mac,myIP);
-  Ethernet.begin(mac,myIP,myDNS,myGW,myMASK);
+  //  Ethernet.begin(mac,myIP);
+  // Menlo: Use DHCP  Ethernet.begin(mac,myIP,myDNS,myGW,myMASK);
+
+  Ethernet.begin(mac); // Menlo: Use DHCP
+
+  #if ACTLOGLEVEL>=LOG_INFO
+    LogObject.uart_send_str(F("localIP: "));
+    #if defined(ARDUINO)
+      LogObject.println(Ethernet.localIP());
+    #endif
+    #if defined(__MBED__)
+      LogObject.printf("%d.%d.%d.%d",Ethernet.localIP()[0],Ethernet.localIP()[1],Ethernet.localIP()[2],Ethernet.localIP()[3]);
+    #endif
+    LogObject.uart_send_str(F("subnetMask: "));
+    #if defined(ARDUINO)
+      LogObject.println(Ethernet.subnetMask());
+    #endif
+    #if defined(__MBED__)
+      LogObject.printf("%d.%d.%d.%d",Ethernet.subnetMask()[0],Ethernet.subnetMask()[1],Ethernet.subnetMask()[2],Ethernet.subnetMask()[3]);
+    #endif
+    LogObject.uart_send_str(F("gatewayIP: "));
+    #if defined(ARDUINO)
+      LogObject.println(Ethernet.gatewayIP());
+    #endif
+    #if defined(__MBED__)
+      LogObject.printf("%d.%d.%d.%d",Ethernet.gatewayIP()[0],Ethernet.gatewayIP()[1],Ethernet.gatewayIP()[2],Ethernet.gatewayIP()[3]);
+    #endif
+    LogObject.uart_send_str(F("dnsServerIP: "));
+    #if defined(ARDUINO)
+      LogObject.println(Ethernet.dnsServerIP());
+    #endif
+    #if defined(__MBED__)
+      LogObject.printf("%d.%d.%d.%d",Ethernet.dnsServerIP()[0],Ethernet.dnsServerIP()[1],Ethernet.dnsServerIP()[2],Ethernet.dnsServerIP()[3]);
+    #endif
+  #endif
 
   server.begin();
 #if defined(ARDUINO)

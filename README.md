@@ -1,3 +1,21 @@
+
+# MenloParkInnovation LLC
+Port UIPEthernet to F32C MIPS/RISC-V soft core running on FPGA's with FPGAArduino.
+
+# Menlo Fork of F32C VHDL RTL for 32 bit MIPS/RISC-V soft core
+https://github.com/menloparkinnovation/f32c
+
+# Menlo Fork of FPGAArduino Arduino IDE add-in, libraries, and GCC compilers
+git clone https://github.com/menloparkinnovation/arduino.git
+
+# F32C Project Root:
+https://github.com/f32c/f32c
+
+# FPGAArduino Project Root:
+http://www.nxlab.fer.hr/fpgarduino/
+
+# Previous Comments
+
 # UIPEthernet
 UIPEthernet library for Arduinos (Atmel AVR-s,Atmel SAM3X8E ARM Cortex-M3,STM32F series,ESP8266,Intel ARC32(Genuino101),Nordic nRF51(RFduino),Teensy boards,Realtek Ameba(RTL8195A,RTL8710)), ENC28j60 network chip compatible with Wiznet W5100 API
 

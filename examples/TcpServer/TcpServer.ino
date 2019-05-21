@@ -82,10 +82,10 @@ int main() {
   #endif
 
   uint8_t mac[6] = {MACADDRESS};
-  uint8_t myIP[4] = {MYIPADDR};
-  uint8_t myMASK[4] = {MYIPMASK};
-  uint8_t myDNS[4] = {MYDNS};
-  uint8_t myGW[4] = {MYGW};
+//  uint8_t myIP[4] = {MYIPADDR};
+//  uint8_t myMASK[4] = {MYIPMASK};
+//  uint8_t myDNS[4] = {MYDNS};
+//  uint8_t myGW[4] = {MYGW};
 
   //  Ethernet.begin(mac,myIP);
   // Menlo: Use DHCP  Ethernet.begin(mac,myIP,myDNS,myGW,myMASK);
